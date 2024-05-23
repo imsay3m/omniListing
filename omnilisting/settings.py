@@ -34,6 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = ["https://web-production-e58b.up.railway.app/"]
 
 
 # Application definition
