@@ -42,6 +42,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
     "https://*.koyeb.app",
     "https://*.up.railway.app",
+    "https://imsay3m.github.io/*",
+    "https://imsay3m.github.io/omniListingClient",
 ]
 CORS_ALLOW_HEADERS = [
     "accept",
