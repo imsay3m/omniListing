@@ -34,7 +34,26 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ["https://web-production-e58b.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:8000",
+    "http://*.127.0.0.1",
+    "http://localhost",
+    "https://*.onrender.com",
+    "https://*.koyeb.app",
+    "https://*.up.railway.app",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 
 
 # Application definition
