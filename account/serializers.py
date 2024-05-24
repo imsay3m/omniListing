@@ -1,41 +1,3 @@
-# from django.contrib.auth.base_user import BaseUserManager
-# from django.contrib.auth.models import AbstractUser
-# from django.db import models
-
-
-# class UserManager(BaseUserManager):
-#     def create_user(self, mobile, password):
-#         if not mobile:
-#             raise ValueError("Users must have a mobile number")
-#         user = self.model(
-#             mobile=mobile,
-#         )
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
-
-#     def create_superuser(self, mobile, password):
-#         user = self.create_user(
-#             mobile=mobile,
-#             password=password,
-#         )
-#         user.is_active = True
-#         user.is_staff = True
-#         user.is_admin = True
-#         user.save(using=self._db)
-#         return user
-
-
-# class User(AbstractUser):
-#     mobile = models.CharField(max_length=14, null=False, unique=True)
-#     image = models.ImageField(
-#         upload_to="images/profile",
-#         default="images/profile/user_avatar.png",
-#     )
-#     USERNAME_FIELD = "mobile"
-#     REQUIRED_FIELDS = []
-#     objects = UserManager()
-# now write a serilizer for this model and set the response code with status code
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -102,8 +64,8 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
 
 
-class LogoutSerializer(serializers.Serializer):
-    refresh_token = serializers.CharField()
+""" class LogoutSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField() """
 
 
 class ChangePasswordSerializer(serializers.Serializer):

@@ -79,12 +79,12 @@ INSTALLED_APPS = [
 ]
 AUTH_USER_MODEL = "account.User"
 
-REST_FRAMEWORK = {
+""" REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     )
-}
-SECURE_COOKIE = True
+} """
+# SECURE_COOKIE = True
 from datetime import timedelta
 
 SIMPLE_JWT = {

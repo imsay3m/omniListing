@@ -9,14 +9,12 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import status, viewsets
 from rest_framework.authentication import authenticate
+from rest_framework.authtoken.models import Token
 from rest_framework.generics import UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.settings import api_settings
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from .serializers import (
@@ -27,6 +25,10 @@ from .serializers import (
     UserSerializer,
     UserUpdateSerializer,
 )
+
+# from rest_framework_simplejwt.authentication import JWTAuthentication
+# from rest_framework_simplejwt.settings import api_settings
+# from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -76,12 +78,64 @@ def activate(request, uid64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        return redirect("login")
+        return redirect("https://imsay3m.github.io/omniListingClient/login-2.html")
     else:
-        return redirect("login")
+        return redirect("https://imsay3m.github.io/omniListingClient/resgister-2.html")
 
 
 class UserLoginAPIView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=self.request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data["username"]
+            password = serializer.validated_data["password"]
+
+            user = authenticate(username=username, password=password)
+            if user:
+                token, _ = Token.objects.get_or_create(user=user)
+                login(request, user)
+                return Response(
+                    {
+                        "token": token.key,
+                        "user_id": user.id,
+                        "message": "User logged in successfully",
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"error": "Invalid Credential"}, status=status.HTTP_400_BAD_REQUEST
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserUpdateView(UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserUpdateSerializer
+
+
+class ChangePasswordView(APIView):
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "Password changed successfully"}, status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserLogoutAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if hasattr(request.user, "auth_token") and request.user.auth_token:
+            request.user.auth_token.delete()
+        logout(request)
+        return redirect("login")
+
+
+""" class UserLoginAPIView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=self.request.data)
         if serializer.is_valid():
@@ -113,17 +167,17 @@ class UserLoginAPIView(APIView):
                 return Response(
                     {"error": "Invalid Credential"}, status=status.HTTP_400_BAD_REQUEST
                 )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
 
 
-class UserUpdateView(UpdateAPIView):
+""" class UserUpdateView(UpdateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
-    serializer_class = UserUpdateSerializer
+    serializer_class = UserUpdateSerializer """
 
 
-class ChangePasswordView(APIView):
+""" class ChangePasswordView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -134,10 +188,10 @@ class ChangePasswordView(APIView):
             return Response(
                 {"message": "Password changed successfully"}, status=status.HTTP_200_OK
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
 
 
-class UserLogoutAPIView(APIView):
+""" class UserLogoutAPIView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = LogoutSerializer
@@ -164,4 +218,4 @@ class UserLogoutAPIView(APIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
